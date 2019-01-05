@@ -29,15 +29,24 @@ Enemy.prototype.render = function() {
 class Player {
     constructor () {
         this.sprite = 'images/char-cat-girl.png'
-        this.x = 1
-        this.y = 1
+        this.x = 200
+        this.y = 400
     }
     update(){
     }
     render(){
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
-    handleInput(){
+    handleInput(direction){
+        if (direction == 'down') {
+            this.y += 80
+        } else if (direction == 'up') {
+            this.y -= 80
+        } else if (direction == 'right') {
+            this.x += 80
+        } else if (direction == 'left') {
+            this.x -= 80
+        }
     }
 }
 
@@ -54,7 +63,7 @@ let player = new Player()
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
+    let allowedKeys = {
         37: 'left',
         38: 'up',
         39: 'right',
