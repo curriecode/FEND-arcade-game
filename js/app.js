@@ -16,6 +16,7 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x += ( 100 * dt)
 };
 
 // Draw the enemy on the screen, required method for game
@@ -26,6 +27,8 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+// let canvasWidth = document.getElementsByTagName('canvas')[0].width
+// let canvasHeight = document.getElementsByTagName('canvas')[0].height
 class Player {
     constructor () {
         this.sprite = 'images/char-cat-girl.png'
@@ -37,16 +40,17 @@ class Player {
     render(){
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
+
     handleInput(direction){
-        if (direction == 'down') {
+        if (direction == 'down' && this.y < 400)  {
             this.y += 80
-        } else if (direction == 'up') {
+        } else if (direction == 'up' && this.y > 0) {
             this.y -= 80
-        } else if (direction == 'right') {
+        } else if (direction == 'right' && this.x < 370) {
             this.x += 80
-        } else if (direction == 'left') {
+        } else if (direction == 'left' && this.x > 50) {
             this.x -= 80
-        }
+        } 
     }
 }
 
@@ -58,7 +62,10 @@ let allEnemies = [enemy1]
 
 let player = new Player()
 
-
+function createNewBug(){
+    // create bug
+    // add to allEnemies
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -73,6 +80,15 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-//create parameter so player can't move off screen
-// get bugs moving
-//think about/plan for how collision will work
+// Bugs
+// create bugs continuously (call function here from engine.js)
+// have bugs start off screen (with a random y value between the stones)
+// have bugs movement speed be random (Math.random)
+
+// Player
+// needs to "win" when they hit the water, and be reset to the starting position
+// setting sensible movement distance and boundaries
+
+// Collision
+// when a bug collides with player, reset the players position 
+
