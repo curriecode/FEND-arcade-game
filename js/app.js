@@ -72,3 +72,7 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+//create parameter so player can't move off screen
+// get bugs moving
+//think about/plan for how collision will work
