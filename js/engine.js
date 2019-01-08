@@ -46,7 +46,7 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
-
+        createNewBug();
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
@@ -90,8 +90,8 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
+        allEnemies.forEach(function(enemy, index) {
+            enemy.update(dt, index);
         });
         player.update();
     }
