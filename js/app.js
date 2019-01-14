@@ -1,98 +1,132 @@
-// Enemies our player must avoid
-// canvas = doc.createElement('canvas')
+let levelSpeedMod = 1;
+let winsElement = document.getElementsByClassName("wins")[0].firstElementChild;
 
+//@description starting coordinates for enemies and increase in speed as the game levels get higher
 let Enemy = function() {
     this.x = -300
     this.y = Math.floor(Math.random() * 200) + 60 
-    this.speed = (Math.floor(Math.random() * 500) + 50 )
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
+    this.speed = (Math.floor(Math.random() * 300) + 50 ) * levelSpeedMod
     this.sprite = 'images/enemy-bug.png';
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
-Enemy.prototype.update = function(dt, index) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-    if (this.x > 600){
-        allEnemies.splice(index, 1)
-    }
-    this.x += this.speed * dt
-};
+Enemy.prototype.setSpeed = function() {
+    this.speed = this.speed * levelSpeedMod;
+}
 
-// Draw the enemy on the screen, required method for game
+Enemy.prototype.update = function(dt, index) {
+    if (this.x > 600) {
+        allEnemies.splice(index, 1);
+    }
+    this.x += this.speed * dt;
+}
+
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
-// let canvasWidth = document.getElementsByTagName('canvas')[0].width
-// let canvasHeight = document.getElementsByTagName('canvas')[0].height
 class Player {
     constructor () {
-        this.sprite = 'images/char-cat-girl.png'
+        this.sprite = 'images/char-cat.png'
         this.x = 200
         this.y = 400
+        this.locked = false;
     }
-    update(){
+    //@description briefly pauses player on water square when they win a level to make game play less visually hectic
+    update() {
         let playerStart = this; 
-        if (this.y < 30){
-            setTimeout(function(){ 
+        if (this.y < 10) {
+            setTimeout(function() { 
                 playerStart.y = 400
-            }, 500)
+                playerStart.x = 200
+                playerStart.locked = false
+            }, 500);
         }
     }
-    render(){
+    render() {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 
-    handleInput(direction){
+    //@descriptiton sets how far the player can move on keypress
+    handleInput(direction) {
         if (direction == 'down' && this.y < 400)  {
-            this.y += 83
+            this.y += 41.5
         } else if (direction == 'up' && this.y > 0) {
-            this.y -= 83
+            this.y -= 41.5
         } else if (direction == 'right' && this.x < 370) {
             this.x += 101
         } else if (direction == 'left' && this.x > 50) {
             this.x -= 101
-        } 
-        this.wins()
-    }
-    wins() {
-        let winsElement = document.getElementsByClassName("wins")[0].firstElementChild
-        if (this.y < 30) {
-            winsElement.innerHTML = Number(winsElement.innerHTML) + 1
         }
+        if (this.isWin() && !this.locked) {
+            this.locked = true
+            this.handleWin()
+        } else {
+            this.locked = false;
+        }
+    }
+    isWin() {
+        return this.y < 10;
+    }  
+    
+    modal(){
+        document.getElementsByClassName('modal')[0].style.visibility = 'visible'
+    }
+
+    //@description reveals gems as levels are completed
+    handleWin() {
+        let blueGem = document.getElementsByClassName("gems")[0].children[1];
+        let greenGem = document.getElementsByClassName("gems")[0].children[3];
+        let orangeGem = document.getElementsByClassName("gems")[0].children[5];
+        let gemSpan1 = document.getElementsByClassName("gems")[0].children[2];
+        let gemSpan2 = document.getElementsByClassName("gems")[0].children[4];
+        let gemSpan3 = document.getElementsByClassName("gems")[0].children[6];
+        let numWins = Number(winsElement.innerHTML) + 1;
+
+        winsElement.innerHTML = numWins;
+        this.increaseSpeed();
+
+        if (numWins >= 3) {
+            blueGem.style.visibility = 'visible'
+            gemSpan1.style.visibility = 'hidden'
+        }
+        if (numWins >= 6) {
+            greenGem.style.visibility = 'visible'
+            gemSpan2.style.visibility = 'hidden'
+        }
+        if (numWins >= 10) {
+            orangeGem.style.visibility = 'visible'
+            gemSpan3.style.visibility = 'hidden'
+            this.modal();
+        }
+    }
+    
+    // @description increases speed of enemies each time a level is completed
+    increaseSpeed() {
+        //increases speed as levels get higher
+        levelSpeedMod += Number(winsElement.innerHTML) / 40
+        allEnemies.forEach((enemy) => {
+            enemy.setSpeed();
+        });
+    }
+
+    selectPlayer(selection){
+        this.sprite = `images/char-${selection}.png`;
     }
 }
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-let enemy1 = new Enemy()
-let allEnemies = [enemy1]
+let enemy1 = new Enemy();
+let allEnemies = [enemy1];
+let player = new Player();
 
-let player = new Player()
-
+//@description creates new enemies and adds them to an array
 function createNewBug() {
     if (allEnemies.length < 5) {
         let enemy = new Enemy()
-        allEnemies.push(enemy)    
+        allEnemies.push(enemy);
     }
-    // If you call this every loop of engine, you will have way too many bugs
-    // create bug
-    // add to allEnemies
 }
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+//@description This listens for key presses and sends the keys to player.handleInput()
 document.addEventListener('keyup', function(e) {
     let allowedKeys = {
         37: 'left',
@@ -100,19 +134,16 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
-    player.handleInput(allowedKeys[e.keyCode]);
+    if (!player.locked) {
+        player.handleInput(allowedKeys[e.keyCode]);
+    }
 });
 
-// Bugs
-// create bugs continuously (call function here from engine.js)
-// have bugs start off screen (with a random y value between the stones (Math.random))
-// have bugs movement speed be random (Math.random)
-
-// Player
-// needs to "win" when they hit the water, and be reset to the starting position
-// setting sensible movement distance and boundaries
-
-// Collision
-// when a bug collides with player, reset the players position 
+let characters = document.querySelectorAll('.boy, .horn, .pink, .princess, .cat');
+//@description event handler to click and choose charcters
+characters.forEach((character) => {
+    character.addEventListener('click', function(e){
+        player.selectPlayer(e.currentTarget.className);
+    });
+});
 

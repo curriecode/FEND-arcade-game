@@ -1,3 +1,82 @@
 body {
     text-align: center;
+    margin-top: -24em;
+    margin-bottom: 1.5em;
+    margin-left: 0;
+    background-image: linear-gradient( pink, lightblue);
+    width: 100%;
+}
+
+canvas {
+    margin-top: -10em;
+}
+
+.gemspan {
+    font-weight: bold;
+    font-size: 40px;
+    position: relative;
+    bottom: 1.5em;
+    right: 1.4em;
+    border: 2px dashed rgb(219, 219, 219);
+    visibility: visible;   
+}
+
+.bluegem {
+    visibility: hidden;
+}
+
+.greengem {
+    visibility: hidden;
+}
+
+.orangegem {
+    visibility: hidden;
+}
+
+.score {
+    width: 20%;
+    border-style: solid;
+    position: relative;
+    top: 40em;
+    left: 5em;
+}
+
+.items {
+    margin-bottom: -30px;
+    text-decoration: underline;
+}
+
+.gems {
+    border-style: solid;
+    width: 30%;
+    position: relative;
+    top: 45em; 
+}
+
+.avatar {
+    position: relative;
+    width: 38%;
+    left: 27em;
+    top: 4em;
+    border-style: solid;
+    margin-bottom: -2em;
+    cursor: pointer;
+}
+
+.choose {
+    margin-bottom: -40px;
+    text-decoration: underline;
+}
+
+.modal {
+    width: 50%;
+    font-size: 40px;
+    position: relative;
+    top: 8em;
+    left: 9em;
+    border: 5px solid;
+    background-image:linear-gradient(lightgreen, lightyellow);
+    padding-top: 1em;
+    padding-bottom: 1em;
+    visibility: hidden;
 }
